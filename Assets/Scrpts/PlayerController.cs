@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -17,10 +18,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject iceTarget;
     [SerializeField] GameObject iceLance;
 
+    [SerializeField] public float curExp;
+
 
     void Start()
     {
         animator = GetComponent<Animator>();
+        curExp = 0;
         
         iceLance.SetActive(false);
         
@@ -94,7 +98,14 @@ public class PlayerController : MonoBehaviour
 
     void Attack()
     {
+        
         enemy = GameObject.FindWithTag("Monster");
+
+        if (enemy == null)
+        {
+            shortDis = 100;
+        }
+
         if (enemy != null)
         {
 
@@ -120,13 +131,11 @@ public class PlayerController : MonoBehaviour
         
         if (shortDis <= 30)
         {
-            animator.SetBool("isAttack", true);
             iceLance.SetActive(true);
 
         }
         else
         {
-            animator.SetBool("isAttack", false);
             iceLance.SetActive(false);
         }
 

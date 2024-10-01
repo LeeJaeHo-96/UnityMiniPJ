@@ -15,3 +15,4 @@ MonoBehaviour:
   monsterName: "\uD2B8\uB864"
   maxHp: 20
   speed: 4
+  exp: 5

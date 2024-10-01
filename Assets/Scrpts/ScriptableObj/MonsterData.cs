@@ -9,4 +9,5 @@ public class MonsterData : ScriptableObject
     public string monsterName;
     public int maxHp;
     public float speed;
+    public float exp;
 }

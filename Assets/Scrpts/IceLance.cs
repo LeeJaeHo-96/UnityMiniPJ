@@ -6,30 +6,13 @@ public class IceLance : MonoBehaviour
 {
     Coroutine damaged = null;
     GameObject target;
-
+    Animator animator;
+    GameObject player;
     private void Start()
     {
-        
+        animator = GameObject.Find("Player").GetComponent<Animator>();
     }
-    // private void OnCollisionEnter(Collision collision)
-    // {
-    //     if (collision.collider.tag == "Monster")
-    //     damaged = StartCoroutine(CoDamage(collision.gameObject));
-    //
-    // }
-    //
-    // private void OnCollisionExit(Collision collision)
-    // {
-    //     StopCoroutine(damaged);
-    //     Debug.Log("코루틴 종료");
-    // }
-    //
-    // IEnumerator CoDamage(GameObject obj)
-    // {
-    //     yield return new WaitForSecondsRealtime(1f);
-    //     Destroy(obj, 1f);
-    //     Debug.Log("코루틴 시작");
-    // }
+    
 
      private void OnTriggerStay(Collider other)
      {
@@ -41,13 +24,20 @@ public class IceLance : MonoBehaviour
      private void OnTriggerExit(Collider other)
      {
          StopCoroutine(damaged);
-         Debug.Log("코루틴 종료");
+         
      }
     
      IEnumerator CoDamage(GameObject obj)
      {
-         yield return new WaitForSecondsRealtime(0.5f);
-         Destroy(obj);
-         Debug.Log("코루틴 시작");
+        animator.SetBool("isAttack", true);
+        yield return new WaitForSecondsRealtime(3f);
+        if (obj != null)
+        {
+            obj.GetComponent<Monster>().curHp -= 1;
+            Debug.Log("몬스터 피격");
+            animator.SetBool("isAttack", false);
+        }
+        
+        
      }
 }

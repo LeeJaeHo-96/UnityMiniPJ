@@ -15,3 +15,4 @@ MonoBehaviour:
   monsterName: "\uACE0\uBE14\uB9B0(\uD074\uB85C)"
   maxHp: 3
   speed: 3
+  exp: 2

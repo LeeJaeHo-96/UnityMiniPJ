@@ -6,8 +6,9 @@ using UnityEngine.UIElements;
 public class Monster : MonoBehaviour
 {
     public MonsterData monsterData;
-    private float curHp;
-
+    [SerializeField] public float curHp;
+    [SerializeField] public float exp;
+    public GameObject bead;
     Animator animator;
     GameObject player;
 
@@ -16,7 +17,8 @@ public class Monster : MonoBehaviour
 
     private void Start()
     {
-       // curHp = monsterData.maxHp;
+        curHp = monsterData.maxHp;
+        exp = monsterData.exp;
         animator = GetComponent<Animator>();
         player = GameObject.Find("Player");
     }
@@ -24,7 +26,7 @@ public class Monster : MonoBehaviour
     {
         
         Move();
-       // Death();
+        Death();
     }
 
     void Move()
@@ -39,7 +41,11 @@ public class Monster : MonoBehaviour
 
     void Death()
     {
-        if(curHp <= 0)
+        if (curHp <= 0)
+        {
             Destroy(gameObject);
+            Instantiate(bead);
+
+        }
     }
 }
