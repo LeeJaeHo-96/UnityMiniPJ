@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -7,15 +8,23 @@ public class PlayerController : MonoBehaviour
     
     public float moveSpeed = 3;
 
-
     Animator animator;
 
+    GameObject enemy;
+    public List<GameObject> FoundMonsters;
+    public GameObject monsters;
+    public float shortDis;
+    [SerializeField] GameObject iceTarget;
+    [SerializeField] GameObject iceLance;
 
 
     void Start()
     {
         animator = GetComponent<Animator>();
         
+        iceLance.SetActive(false);
+        
+
     }
 
     
@@ -23,7 +32,7 @@ public class PlayerController : MonoBehaviour
     {
        
         Move();
-
+        Attack();
 
     }
 
@@ -35,8 +44,8 @@ public class PlayerController : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
-        transform.Translate(Vector3.forward.normalized * z * moveSpeed * Time.deltaTime);
-        transform.Translate(Vector3.right* x * moveSpeed * Time.deltaTime);
+        transform.Translate(Vector3.forward * z * moveSpeed * Time.deltaTime, Space.World);
+        transform.Translate(Vector3.right* x * moveSpeed * Time.deltaTime, Space.World);
 
         if(Input.GetKeyDown(KeyCode.LeftShift))
         {
@@ -73,7 +82,7 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Left", false);
             animator.SetBool("Back", false);
         }
-        if (new Vector3(x, 0, z) == Vector3.down)
+        if (new Vector3(x, 0, z) == Vector3.back)
         {
             animator.SetBool("Back", true);
             animator.SetBool("Left", false);
@@ -81,5 +90,48 @@ public class PlayerController : MonoBehaviour
         }
 
 
+    }
+
+    void Attack()
+    {
+        enemy = GameObject.FindWithTag("Monster");
+        if (enemy != null)
+        {
+
+            FoundMonsters = new List<GameObject>(GameObject.FindGameObjectsWithTag("Monster"));
+            shortDis = Vector3.Distance(gameObject.transform.position, FoundMonsters[0].transform.position);
+
+            monsters = FoundMonsters[0];
+
+            foreach (GameObject found in FoundMonsters)
+            {
+                float Distance = Vector3.Distance(gameObject.transform.position, found.transform.position);
+
+                if (Distance < shortDis)
+                {
+                    monsters = found;
+                    shortDis = Distance;
+
+                    transform.LookAt(monsters.transform);
+                }
+            }
+            iceTarget.transform.position = monsters.transform.position;
+        }
+        
+        if (shortDis <= 30)
+        {
+            animator.SetBool("isAttack", true);
+            iceLance.SetActive(true);
+
+        }
+        else
+        {
+            animator.SetBool("isAttack", false);
+            iceLance.SetActive(false);
+        }
+
+        //범위안에 적이 들어오면
+        // 아이스타겟의 위치가 그 적 위치로
+        // 그럼 데미지 1입음 1초마다
     }
 }

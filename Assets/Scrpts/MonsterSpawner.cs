@@ -9,10 +9,14 @@ public class MonsterSpawner : MonoBehaviour
 {
     [SerializeField] GameObject monster;
     [SerializeField] GameObject spawner;
+    [SerializeField] GameObject player;
 
     private void Start()
     {
-        
+        player = GameObject.Find("Player");
+        transform.LookAt(player.transform);
+
+        spawner = this.gameObject;
         Coroutine spawn = StartCoroutine(MonsterSpawn());
 
         if (Input.GetKeyDown(KeyCode.Space))
