@@ -33,7 +33,7 @@ public class Monster : MonoBehaviour
     {
         transform.position = Vector3.MoveTowards(gameObject.transform.position, player.transform.position, 5 * Time.deltaTime);
 
-       if (3 > 1)
+       if (3 > 1) // 구동 테스트용 매직넘버
             animator.SetBool("walk", true);
 
        transform.LookAt(player.transform.position);

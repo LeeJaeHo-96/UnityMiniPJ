@@ -19,10 +19,6 @@ public class MonsterSpawner : MonoBehaviour
         spawner = this.gameObject;
         Coroutine spawn = StartCoroutine(MonsterSpawn());
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            StopCoroutine(spawn);
-        }
     }
 
     private void Update()

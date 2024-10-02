@@ -6,41 +6,42 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    
+
     public float moveSpeed = 3;
 
     Animator animator;
 
-    GameObject enemy;
+    [SerializeField] GameObject enemy;
     public List<GameObject> FoundMonsters;
     public GameObject monsters;
-    public float shortDis;
-    [SerializeField] GameObject iceTarget;
-    [SerializeField] GameObject iceLance;
+    public float shortDis = 100;
+    public float cooldown = 1f;
+    public float range = 30f;
+
+    Coroutine fire = null;
 
     [SerializeField] public float curExp;
-
+    [SerializeField] GameObject fireBall;
+    [SerializeField] GameObject nozzle;
 
     void Start()
     {
+        enemy = GameObject.FindWithTag("Monster");
         animator = GetComponent<Animator>();
         curExp = 0;
-        
-        iceLance.SetActive(false);
-        
+
+        fire = StartCoroutine(CoAttack());
 
     }
 
-    
+
     void Update()
     {
-       
         Move();
-        Attack();
-
+        MonsterScanning();
     }
 
-    
+
 
 
     private void Move()
@@ -49,22 +50,22 @@ public class PlayerController : MonoBehaviour
         float z = Input.GetAxis("Vertical");
 
         transform.Translate(Vector3.forward * z * moveSpeed * Time.deltaTime, Space.World);
-        transform.Translate(Vector3.right* x * moveSpeed * Time.deltaTime, Space.World);
+        transform.Translate(Vector3.right * x * moveSpeed * Time.deltaTime, Space.World);
 
-        if(Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             moveSpeed = 6;
         }
-        if(Input.GetKeyUp(KeyCode.LeftShift))
+        if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             moveSpeed = 3;
         }
         animator.SetFloat("moveSpeed", moveSpeed);
 
-        if(new Vector3(x, 0 ,z) == Vector3.zero)
+        if (new Vector3(x, 0, z) == Vector3.zero)
         {
             animator.SetFloat("moveSpeed", 0);
-            
+
 
         }
         if (new Vector3(x, 0, z) == Vector3.forward)
@@ -95,16 +96,11 @@ public class PlayerController : MonoBehaviour
 
 
     }
+    
 
-    void Attack()
+    void MonsterScanning()
     {
-        
         enemy = GameObject.FindWithTag("Monster");
-
-        if (enemy == null)
-        {
-            shortDis = 100;
-        }
 
         if (enemy != null)
         {
@@ -123,24 +119,36 @@ public class PlayerController : MonoBehaviour
                     monsters = found;
                     shortDis = Distance;
 
+                    
                     transform.LookAt(monsters.transform);
                 }
             }
-            iceTarget.transform.position = monsters.transform.position;
         }
-        
-        if (shortDis <= 30)
+        else 
         {
-            iceLance.SetActive(true);
-
-        }
-        else
-        {
-            iceLance.SetActive(false);
+            shortDis = 100;
         }
 
-        //범위안에 적이 들어오면
-        // 아이스타겟의 위치가 그 적 위치로
-        // 그럼 데미지 1입음 1초마다
     }
+    IEnumerator CoAttack()
+    {
+        Debug.Log("코루틴 실행");
+        while (monsters != null)
+        {
+            Debug.Log("파이어볼생성");
+            Instantiate(fireBall, GameObject.Find("nozzle").transform.position, Quaternion.identity);
+
+
+            yield return new WaitForSecondsRealtime(cooldown);
+
+            if (monsters == null)
+            {
+                StopCoroutine(fire);
+                Debug.Log("코루틴 종료");
+            }
+        }
+
+    }
+
+
 }

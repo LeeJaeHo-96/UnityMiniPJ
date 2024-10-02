@@ -13,7 +13,7 @@ public class Bead : MonoBehaviour
     private void Start()
     {
         player = GameObject.Find("Player");
-        exp = GameObject.FindWithTag("Monster").GetComponent<Monster>().exp;
+        exp = 1; // GameObject.FindWithTag("Monster").GetComponent<Monster>().exp;
     }
     // Update is called once per frame
     void Update()
@@ -38,9 +38,9 @@ public class Bead : MonoBehaviour
         player.GetComponent<PlayerController>().curExp += exp;
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        if ( other == player.gameObject)
+        if ( other.CompareTag("Player"))
         {
             Destroy(gameObject);
             PlayerGetEXP(exp);
